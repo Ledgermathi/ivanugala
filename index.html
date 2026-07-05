@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ivanugala — ECE-A Brotherhood</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Black&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --black-2: #131313;
+    --card: #171717;
+    --off-white: #f2f0eb;
+    --grey: #8a8a86;
+    --grey-dim: #55534f;
+    --blue: #4c5fe0;
+    --blue-glow: rgba(76, 95, 224, 0.35);
+    --yellow: #e8b23d;
+    --line: rgba(242, 240, 235, 0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--off-white);
+    font-family: 'Archivo', sans-serif;
+    overflow-x: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  }
+
+  a { color: inherit; }
+
+  ::selection { background: var(--blue); color: var(--black); }
+
+  /* ---------- texture ---------- */
+  .grain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.045;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- nav ---------- */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 6vw;
+    mix-blend-mode: difference;
+  }
+  .nav-mark {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 1.3rem;
+    letter-spacing: 0.5px;
+  }
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .nav-links a { text-decoration: none; opacity: 0.8; transition: opacity 0.2s; }
+  .nav-links a:hover { opacity: 1; }
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+  }
+
+  /* ---------- hero ---------- */
+  .hero {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 120px 6vw 80px;
+    text-align: center;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, var(--blue-glow) 0%, transparent 60%),
+      var(--black);
+  }
+
+  .hero-logo {
+    width: min(280px, 42vw);
+    height: auto;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 0 40px rgba(76,95,224,0.25));
+    opacity: 0;
+    animation: rise 1s cubic-bezier(.2,.8,.2,1) 0.1s forwards;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(24px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .hero-tagline {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(1.6rem, 5vw, 3.2rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    max-width: 14ch;
+    margin-top: 4px;
+    opacity: 0;
+    animation: rise 1s cubic-bezier(.2,.8,.2,1) 0.35s forwards;
+  }
+  .hero-tagline .accent { color: var(--blue); }
+
+  .hero-sub {
+    margin-top: 22px;
+    color: var(--grey);
+    font-size: 0.95rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 600;
+    opacity: 0;
+    animation: rise 1s cubic-bezier(.2,.8,.2,1) 0.55s forwards;
+  }
+  .hero-sub b { color: var(--off-white); font-weight: 700; }
+
+  .scroll-cue {
+    position: absolute;
+    bottom: 34px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--grey-dim);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: rise 1s ease 0.9s forwards;
+  }
+  .scroll-cue::after {
+    content: '';
+    width: 1px;
+    height: 28px;
+    background: linear-gradient(var(--grey-dim), transparent);
+    animation: pulseLine 1.8s ease-in-out infinite;
+  }
+  @keyframes pulseLine {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* ---------- section shared ---------- */
+  section { position: relative; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 6vw; }
+
+  .eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--blue);
+    font-weight: 700;
+    margin-bottom: 18px;
+    display: inline-block;
+  }
+
+  /* ---------- origin / manifesto ---------- */
+  .origin {
+    padding: 140px 0 120px;
+    border-top: 1px solid var(--line);
+  }
+  .origin-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 64px;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .origin-grid { grid-template-columns: 1fr; gap: 32px; }
+  }
+
+  .origin-head h2 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  .founder-tag {
+    margin-top: 28px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 18px 10px 10px;
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    background: var(--black-2);
+  }
+  .founder-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), #2a3699);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Permanent Marker', cursive;
+    font-size: 0.9rem;
+    color: var(--off-white);
+    flex-shrink: 0;
+  }
+  .founder-tag .ft-name { font-size: 0.82rem; font-weight: 700; }
+  .founder-tag .ft-sub { font-size: 0.72rem; color: var(--grey); display: block; margin-top: 1px; }
+
+  .origin-body p {
+    font-size: 1.08rem;
+    line-height: 1.75;
+    color: #cfcdc6;
+    margin-bottom: 22px;
+  }
+  .origin-body p:last-child { margin-bottom: 0; }
+  .origin-body strong { color: var(--off-white); font-weight: 700; }
+  .origin-body .pull {
+    font-family: 'Permanent Marker', cursive;
+    color: var(--yellow);
+    font-size: 1.15rem;
+    display: block;
+    margin: 6px 0;
+  }
+
+  /* ---------- values strip ---------- */
+  .values {
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 46px 0;
+    overflow: hidden;
+  }
+  .values-track {
+    display: flex;
+    gap: 0;
+    width: max-content;
+    animation: scrollTrack 32s linear infinite;
+  }
+  .values:hover .values-track { animation-play-state: paused; }
+  @keyframes scrollTrack {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .values-item {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(1.4rem, 2.6vw, 2.1rem);
+    padding: 0 2.2rem;
+    white-space: nowrap;
+    color: var(--grey-dim);
+    display: flex;
+    align-items: center;
+    gap: 2.2rem;
+  }
+  .values-item span.dot { color: var(--blue); font-size: 1rem; }
+  .values-item.hot { color: var(--off-white); }
+
+  /* ---------- timeline ---------- */
+  .timeline {
+    padding: 100px 0 40px;
+    border-top: 1px solid var(--line);
+  }
+  .timeline h2 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    margin-bottom: 56px;
+  }
+
+  .tl-track {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding-left: 28px;
+    border-left: 1px solid var(--line);
+  }
+
+  .tl-item {
+    position: relative;
+    padding-bottom: 56px;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .tl-item.in-view {
+    animation: cardIn 0.7s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+  .tl-item:last-child { padding-bottom: 0; }
+
+  .tl-dot {
+    position: absolute;
+    left: -33px;
+    top: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--black);
+    border: 2px solid var(--blue);
+    box-shadow: 0 0 0 4px var(--black);
+  }
+  .tl-item:last-child .tl-dot {
+    background: var(--blue);
+    box-shadow: 0 0 0 4px var(--black), 0 0 16px var(--blue-glow);
+  }
+
+  .tl-year {
+    font-family: 'Permanent Marker', cursive;
+    color: var(--blue);
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+  }
+  .tl-item h3 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(1.2rem, 2.4vw, 1.6rem);
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+  .tl-item p {
+    color: #cfcdc6;
+    font-size: 1rem;
+    line-height: 1.65;
+    max-width: 56ch;
+  }
+  .tl-item p strong { color: var(--off-white); }
+
+  .tl-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    padding: 9px 16px;
+    border: 1px solid rgba(76,95,224,0.35);
+    background: rgba(76,95,224,0.1);
+    border-radius: 100px;
+    text-decoration: none;
+    color: #9aa5f0;
+    font-size: 0.82rem;
+    font-weight: 700;
+    transition: background 0.25s, border-color 0.25s, transform 0.25s;
+  }
+  .tl-link svg { width: 14px; height: 14px; }
+  .tl-link:hover {
+    background: rgba(76,95,224,0.2);
+    border-color: var(--blue);
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 640px) {
+    .tl-track { padding-left: 22px; }
+    .tl-dot { left: -27px; }
+  }
+
+  /* ---------- motto wall ---------- */
+  .motto {
+    padding: 100px 0 40px;
+    border-top: 1px solid var(--line);
+  }
+  .motto h2 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    margin-bottom: 44px;
+  }
+
+  .motto-wall {
+    columns: 3 260px;
+    column-gap: 18px;
+  }
+  @media (max-width: 900px) { .motto-wall { columns: 2 220px; } }
+  @media (max-width: 560px) { .motto-wall { columns: 1; } }
+
+  .motto-card {
+    break-inside: avoid;
+    margin-bottom: 18px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 26px 22px 22px;
+    position: relative;
+    opacity: 0;
+    transform: translateY(16px) rotate(-0.4deg);
+    transition: transform 0.3s, border-color 0.3s;
+  }
+  .motto-card.in-view {
+    animation: cardIn 0.6s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+  .motto-card:nth-child(even) { transform: translateY(16px) rotate(0.5deg); }
+  .motto-card:hover {
+    border-color: var(--blue);
+    transform: translateY(-4px) rotate(0deg) !important;
+  }
+
+  .motto-card .quote-mark {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 2.6rem;
+    color: var(--blue);
+    line-height: 0.5;
+    display: block;
+    margin-bottom: 10px;
+    opacity: 0.85;
+  }
+  .motto-card p {
+    font-size: 1.02rem;
+    line-height: 1.55;
+    color: var(--off-white);
+    font-weight: 500;
+  }
+  .motto-card.big {
+    background: linear-gradient(160deg, #1a1d2e, var(--card));
+    border-color: rgba(76,95,224,0.4);
+  }
+  .motto-card.big p {
+    font-size: 1.28rem;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+  .motto-tag {
+    display: inline-block;
+    margin-top: 16px;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    color: var(--yellow);
+  }
+
+  /* ---------- roster ---------- */
+  .roster {
+    padding: 120px 0 60px;
+  }
+  .roster-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 56px;
+  }
+  .roster-head h2 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    line-height: 1;
+  }
+  .roster-count {
+    font-family: 'Permanent Marker', cursive;
+    color: var(--blue);
+    font-size: 1.1rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+  @media (max-width: 1000px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 720px) { .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
+  @media (max-width: 460px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px 18px 20px;
+    overflow: hidden;
+    transition: transform 0.35s cubic-bezier(.2,.8,.2,1), border-color 0.35s;
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  .card.in-view {
+    animation: cardIn 0.6s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+  @keyframes cardIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .card:hover {
+    transform: translateY(-6px);
+    border-color: var(--blue);
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--blue), transparent);
+    opacity: 0;
+    transition: opacity 0.35s;
+  }
+  .card:hover::before { opacity: 1; }
+
+  .card-avatar {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 10px;
+    background: linear-gradient(150deg, #23262f, #14151a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-avatar .initials {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 2.1rem;
+    color: var(--grey-dim);
+    letter-spacing: -0.02em;
+  }
+  .card-avatar .ph-tag {
+    position: absolute;
+    bottom: 8px; right: 8px;
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--grey-dim);
+    background: rgba(0,0,0,0.5);
+    padding: 3px 7px;
+    border-radius: 4px;
+  }
+  .avatar-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
+  .card-num {
+    position: absolute;
+    top: 14px; left: 16px;
+    font-size: 0.7rem;
+    color: var(--grey-dim);
+    font-weight: 700;
+    z-index: 2;
+  }
+
+  .card-nick {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 1.3rem;
+    line-height: 1.15;
+    color: var(--off-white);
+    margin-bottom: 4px;
+  }
+  .card-real {
+    font-size: 0.78rem;
+    color: var(--grey);
+    margin-bottom: 12px;
+  }
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .chip {
+    font-size: 0.66rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 5px 9px;
+    border-radius: 100px;
+    background: rgba(76,95,224,0.14);
+    color: #9aa5f0;
+    border: 1px solid rgba(76,95,224,0.3);
+  }
+  .chip.alt {
+    background: rgba(232,178,61,0.12);
+    color: var(--yellow);
+    border-color: rgba(232,178,61,0.28);
+  }
+
+  .card.founder-card {
+    background: linear-gradient(160deg, #1a1d2e, var(--card));
+    border-color: rgba(76,95,224,0.4);
+  }
+  .founder-card .card-avatar {
+    background: linear-gradient(150deg, var(--blue), #232752);
+  }
+  .founder-card .card-avatar .initials { color: rgba(255,255,255,0.85); }
+  .crown {
+    position: absolute;
+    top: 14px; right: 16px;
+    font-size: 1rem;
+    z-index: 2;
+  }
+
+  /* ---------- gallery / videos placeholder ---------- */
+  .gallery {
+    padding: 100px 0 120px;
+    border-top: 1px solid var(--line);
+    margin-top: 60px;
+  }
+  .gallery-head { margin-bottom: 40px; }
+  .gallery-head h2 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+  }
+  .gallery-head p { color: var(--grey); margin-top: 10px; font-size: 0.95rem; max-width: 46ch; }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  @media (max-width: 900px) { .gallery-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 720px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .gallery-item {
+    aspect-ratio: 4/3;
+    border-radius: 12px;
+    background: repeating-linear-gradient(135deg, #161616, #161616 10px, #1c1c1c 10px, #1c1c1c 20px);
+    border: 1px dashed var(--line);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--grey-dim);
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+  }
+  .gallery-item svg { width: 26px; height: 26px; opacity: 0.5; }
+  .gallery-item span { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; z-index: 1; }
+
+  .media-thumb {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.4s;
+  }
+  .gallery-item.has-media {
+    border-style: solid;
+    cursor: pointer;
+  }
+  .gallery-item.has-media svg,
+  .gallery-item.has-media span { display: none; }
+  .gallery-item.has-media .media-thumb { opacity: 1; }
+  .gallery-item.has-media:hover .media-thumb { transform: scale(1.06); }
+  .gallery-item.has-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.55));
+    z-index: 1;
+    pointer-events: none;
+  }
+  .gallery-item[data-type="video"].has-media::before {
+    content: '▶';
+    position: absolute;
+    z-index: 2;
+    color: var(--off-white);
+    background: rgba(0,0,0,0.45);
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.25s, background 0.25s;
+  }
+  .gallery-item[data-type="video"].has-media:hover::before {
+    background: var(--blue);
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(6,6,6,0.94);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 5vh 5vw;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox-inner {
+    max-width: 92vw;
+    max-height: 88vh;
+  }
+  .lightbox-inner video,
+  .lightbox-inner img {
+    max-width: 92vw;
+    max-height: 88vh;
+    border-radius: 8px;
+    display: block;
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 24px; right: 28px;
+    background: none;
+    border: none;
+    color: var(--off-white);
+    font-size: 2rem;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  /* ---------- footer ---------- */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 56px 0 40px;
+    text-align: center;
+  }
+  .footer-mark {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+  }
+  .footer-mark .blue { color: var(--blue); }
+  footer p {
+    color: var(--grey-dim);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<nav>
+  <div class="nav-mark">IVANUGALA</div>
+  <div class="nav-links">
+    <a href="#origin">Origin</a>
+    <a href="#timeline">Story</a>
+    <a href="#motto">Motto</a>
+    <a href="#roster">Roster</a>
+    <a href="#gallery">Gallery</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <img src="logo.png" alt="Ivanugala — Dept of ECE" class="hero-logo">
+  <h1 class="hero-tagline">It's not a team.<br>It's a <span class="accent">brotherhood.</span></h1>
+  <p class="hero-sub">ECE&#8209;A &middot; Batch <b>2025&ndash;2029</b> &middot; 16 members, 1 brotherhood</p>
+  <div class="scroll-cue">Scroll</div>
+</section>
+
+<section class="origin" id="origin">
+  <div class="wrap">
+    <div class="origin-grid">
+      <div class="origin-head">
+        <span class="eyebrow">The Origin</span>
+        <h2>Started by one guy. Became a family.</h2>
+        <div class="founder-tag">
+          <div class="founder-avatar">L</div>
+          <div>
+            <span class="ft-name">Mathimukilan &mdash; "Ledger"</span>
+            <span class="ft-sub">Founder &middot; lowkey &middot; gamer</span>
+          </div>
+        </div>
+      </div>
+      <div class="origin-body">
+        <p>Ivanugala was formed by <strong>Mathimukilan</strong> &mdash; the homies just call him <strong>Ledger</strong>. He's lowkey about it, but everyone knows the crew doesn't exist without him.</p>
+        <p>Originating from <strong>ECE&#8209;A, Batch 2025&ndash;2029</strong>, the team is known for being unpredictable, chaotic, and naturally funny. Every moment they spend together turns into a memory worth remembering.</p>
+        <p>Ivanugala is more than just a group of classmates or teammates &mdash; <strong>they are brothers</strong>. They stand by one another during the toughest times, celebrate every victory together, and never leave a member behind.</p>
+        <span class="pull">No ego. No jealousy. All loyalty.</span>
+        <p>What truly sets Ivanugala apart is their bond &mdash; built on trust, loyalty, respect, and genuine friendship. They work on projects together, learn together, grow together, and create wholesome memories that last a lifetime. Every member wants to see the others succeed, believing that <strong>one person's success is a victory for the entire brotherhood.</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="values">
+  <div class="values-track" id="valuesTrack">
+    <!-- duplicated via JS for seamless loop -->
+  </div>
+</div>
+
+<section class="timeline" id="timeline">
+  <div class="wrap">
+    <span class="eyebrow">The Story</span>
+    <h2>How We Met</h2>
+    <div class="tl-track">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year">Year 1</div>
+        <h3>Same class, same chaos</h3>
+        <p>First year, ECE&#8209;A. Just classmates sitting in the same room &mdash; until they weren't just classmates anymore.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year">The Spark</div>
+        <h3>Ledger starts a meme page</h3>
+        <p>Ledger created a meme page called <strong>@_ivanugala_</strong> and that's when the name became real &mdash; not just a group of friends anymore, a whole identity.</p>
+        <a href="https://www.instagram.com/_ivanugala_?igsh=eGF2NjliMnBxdTMy" target="_blank" rel="noopener" class="tl-link">
+          <span>@_ivanugala_ on Instagram</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+        </a>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year">Ongoing</div>
+        <h3>A lot of funny moments</h3>
+        <p>Too many to count. This is the whole reason the group exists &mdash; the chaos, the jokes, the moments that only make sense if you were there.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year">Tradition</div>
+        <h3>Birthdays at the gate</h3>
+        <p>Every birthday gets celebrated the same way &mdash; right in front of the college gate, every single time, no matter what.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year">Now</div>
+        <h3>Second year, still together</h3>
+        <p>Now in 2nd year. Sections may have changed, but the bond hasn't &mdash; still one brotherhood.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="motto" id="motto">
+  <div class="wrap">
+    <span class="eyebrow">The Motto</span>
+    <h2>What we live by</h2>
+    <div class="motto-wall">
+      <div class="motto-card big">
+        <span class="quote-mark">&ldquo;</span>
+        <p>We all wanna see how each of us is gonna win in life &mdash; and when it happens, we celebrate it together.</p>
+        <span class="motto-tag">The Anchor</span>
+      </div>
+      <div class="motto-card">
+        <span class="quote-mark">&ldquo;</span>
+        <p>No rats. No ego. Just the bond.</p>
+      </div>
+      <div class="motto-card">
+        <span class="quote-mark">&ldquo;</span>
+        <p>One brother's win is the whole crew's win.</p>
+      </div>
+      <div class="motto-card">
+        <span class="quote-mark">&ldquo;</span>
+        <p>Birthdays get celebrated at the gate. No exceptions.</p>
+      </div>
+      <div class="motto-card">
+        <span class="quote-mark">&ldquo;</span>
+        <p>It started as a meme page. It became a family.</p>
+      </div>
+      <div class="motto-card">
+        <span class="quote-mark">&ldquo;</span>
+        <p>Sections change. Ivanugala doesn't.</p>
+      </div>
+      <div class="motto-card">
+        <span class="quote-mark">&ldquo;</span>
+        <p>Never stop trying. If you're alive, you've got infinite chances &mdash; don't give up easy, try harder.</p>
+      </div>
+      <div class="motto-card">
+        <span class="quote-mark">&ldquo;</span>
+        <p>Even Sekiro couldn't humble the squad &mdash; just Karthik.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="roster" id="roster">
+  <div class="wrap">
+    <div class="roster-head">
+      <h2>The Roster</h2>
+      <span class="roster-count">16 brothers, 1 bond ✦</span>
+    </div>
+    <div class="grid" id="rosterGrid"></div>
+  </div>
+</section>
+
+<section class="gallery" id="gallery">
+  <div class="wrap">
+    <div class="gallery-head">
+      <span class="eyebrow">Memories</span>
+      <h2>Photos &amp; videos</h2>
+      <p>This is where the real chaos gets archived. Drop in the group's photos and clips and this section fills up automatically.</p>
+    </div>
+    <div class="gallery-grid" id="galleryGrid"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-mark">IVANUGALA <span class="blue">/</span> ECE&#8209;A</div>
+  <p>Batch 2025&ndash;2029 &middot; P.A. College of Engineering and Technology</p>
+</footer>
+
+<script>
+  // ---- member data ----
+  const members = [
+    { real: "Mathimukilan", nick: "Ledger", tags: ["Founder", "Lowkey", "Gamer"], founder: true, photo: "photos/ledger.jpg" },
+    { real: "Kishorkumar", nick: "Maths Master", tags: ["Nanbar", "Gamer"], photo: "photos/kishorkumar.jpg" },
+    { real: "Chandru", nick: "Kanni Pengalin Kanavu Kannan", tags: ["Nanbar", "Eclectic Listener"], photo: "photos/chandru.jpg" },
+    { real: "Manoranjithkumar", nick: "Mapla Kumar", tags: ["Nanbar", "Embedded Systems Kai"], photo: "photos/manoranjithkumar.jpg" },
+    { real: "Deepan", nick: "Heavy Driver", tags: ["Nanbar", "Mini Project Kai"], photo: "photos/deepan.jpg" },
+    { real: "Naveenraj", nick: "Valanthavar", tags: ["Nanbar", "A Weeb Kai"], photo: "photos/naveenraj.jpg" },
+    { real: "Sabarivasan", nick: "Mottai", tags: ["Nanbar", "Morattu Samayalkarar"], photo: "photos/sabarivasan.jpg" },
+    { real: "Sabarish", nick: "The Scientist", tags: ["Nanbar", "Electrical Projects Kai"], photo: "photos/sabarish.jpg" },
+    { real: "Karthik", nick: "Thungu Munji", tags: ["Nanbar", "Gamer", "Humbled by Sekiro"], photo: "photos/karthik.jpg" },
+    { real: "Nandha Kumar", nick: "24/7 Kadhalipavar", tags: ["Nanbar", "Love Tips"], photo: "photos/nandhakumar.jpg" },
+    { real: "Kaleeswaran", nick: "Morattu Sandakarar", tags: ["Nanbar", "Cinephile"], photo: "photos/kaleeswaran.jpg" },
+    { real: "Dhayananth", nick: "Chaos Maker", tags: ["Nanbar", "24/7 FF Player"], photo: "photos/dhayananth.jpg" },
+    { real: "Navaneeth", nick: "Kishor Purushan", tags: ["Nanbar", "Topper"], photo: "photos/navaneeth.jpg" },
+    { real: "Adhithya", nick: "Kutty", tags: ["Nanbar", "Padipu Kai"], photo: "photos/adhithya.jpg" },
+    { real: "Jai Abinath", nick: "Handsome", tags: ["Nanbar", "Knowledge Athigam Ulla Kai"], photo: "photos/jaiabinath.jpg" },
+    { real: "Karthikeyan", nick: "Style Thambi", tags: ["Nanbar", "Photo Editor"], photo: "photos/karthikeyan.jpg" },
+  ];
+
+  function initials(name) {
+    return name.split(" ").map(w => w[0]).slice(0,2).join("").toUpperCase();
+  }
+
+  const grid = document.getElementById("rosterGrid");
+  members.forEach((m, i) => {
+    const card = document.createElement("div");
+    card.className = "card" + (m.founder ? " founder-card" : "");
+    card.innerHTML = `
+      <span class="card-num">#${String(i+1).padStart(2,'0')}</span>
+      ${m.founder ? '<span class="crown">👑</span>' : ''}
+      <div class="card-avatar">
+        ${m.photo
+          ? `<img src="${m.photo}" alt="${m.nick}" class="avatar-photo">`
+          : `<span class="initials">${initials(m.real)}</span><span class="ph-tag">Photo soon</span>`}
+      </div>
+      <div class="card-nick">${m.nick}</div>
+      <div class="card-real">${m.real}</div>
+      <div class="card-tags">
+        ${m.tags.map((t, ti) => `<span class="chip${ti % 2 ? ' alt' : ''}">${t}</span>`).join("")}
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // ---- gallery / media ----
+  // Add your real files here. type: "video" or "photo". src: filename (put files next to index.html).
+  const media = [
+    { type: "video", src: "videos/clip1.mp4", label: "Clip 01" },
+    { type: "video", src: "videos/clip2.mp4", label: "Clip 02" },
+    { type: "video", src: "videos/clip3.mp4", label: "Clip 03" },
+    { type: "video", src: "videos/clip4.mp4", label: "Clip 04" },
+    { type: "video", src: "videos/clip5.mp4", label: "Clip 05" },
+    { type: "video", src: "videos/clip6.mp4", label: "Clip 06" },
+    { type: "video", src: "videos/clip7.mp4", label: "Clip 07" },
+    { type: "video", src: "videos/clip8.mp4", label: "Clip 08" },
+    { type: "video", src: "videos/clip9.mp4", label: "Clip 09" },
+    { type: "video", src: "videos/clip10.mp4", label: "Clip 10" },
+    { type: "video", src: "videos/clip11.mp4", label: "Clip 11" },
+    { type: "video", src: "videos/clip12.mp4", label: "Clip 12" },
+    { type: "video", src: "videos/clip13.mp4", label: "Clip 13" },
+    { type: "video", src: "videos/clip14.mp4", label: "Clip 14" },
+    { type: "video", src: "videos/clip15.mp4", label: "Clip 15" },
+    { type: "video", src: "videos/clip16.mp4", label: "Clip 16" },
+    { type: "video", src: "videos/clip17.mp4", label: "Clip 17" },
+    { type: "video", src: "videos/clip18.mp4", label: "Clip 18" },
+    { type: "video", src: "videos/clip19.mp4", label: "Clip 19" },
+    { type: "video", src: "videos/clip20.mp4", label: "Clip 20" },
+    { type: "video", src: "videos/clip21.mp4", label: "Clip 21" },
+  ];
+
+  const galleryGrid = document.getElementById("galleryGrid");
+
+  function placeholderIcon(type) {
+    return type === "video"
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>';
+  }
+
+  media.forEach((m, i) => {
+    const item = document.createElement("div");
+    item.className = "gallery-item media-slot";
+    item.dataset.type = m.type;
+    item.dataset.src = m.src;
+    item.innerHTML = `
+      ${placeholderIcon(m.type)}
+      <span>${m.label || (m.type === "video" ? "Video slot" : "Photo slot")}</span>
+    `;
+    // Try to load the real file as a thumbnail/preview; falls back to placeholder if missing.
+    if (m.type === "video") {
+      const vid = document.createElement("video");
+      vid.src = m.src;
+      vid.muted = true;
+      vid.preload = "metadata";
+      vid.className = "media-thumb";
+      vid.onloadeddata = () => item.classList.add("has-media");
+      vid.onerror = () => item.classList.add("missing");
+      item.prepend(vid);
+    } else {
+      const img = document.createElement("img");
+      img.src = m.src;
+      img.className = "media-thumb";
+      img.onload = () => item.classList.add("has-media");
+      img.onerror = () => item.classList.add("missing");
+      item.prepend(img);
+    }
+    item.addEventListener("click", () => openLightbox(m));
+    galleryGrid.appendChild(item);
+  });
+
+  // lightbox
+  const lightbox = document.createElement("div");
+  lightbox.className = "lightbox";
+  lightbox.innerHTML = `<div class="lightbox-inner"></div><button class="lightbox-close" aria-label="Close">&times;</button>`;
+  document.body.appendChild(lightbox);
+
+  function openLightbox(m) {
+    if (!document.querySelector(`[data-src="${m.src}"]`)?.classList.contains("has-media")) return;
+    const inner = lightbox.querySelector(".lightbox-inner");
+    inner.innerHTML = m.type === "video"
+      ? `<video src="${m.src}" controls autoplay></video>`
+      : `<img src="${m.src}" alt="">`;
+    lightbox.classList.add("open");
+  }
+  lightbox.querySelector(".lightbox-close").addEventListener("click", () => {
+    lightbox.classList.remove("open");
+    lightbox.querySelector(".lightbox-inner").innerHTML = "";
+  });
+  lightbox.addEventListener("click", (e) => {
+    if (e.target === lightbox) {
+      lightbox.classList.remove("open");
+      lightbox.querySelector(".lightbox-inner").innerHTML = "";
+    }
+  });
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add("in-view");
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll(".card, .tl-item, .motto-card").forEach(c => io.observe(c));
+
+  // values marquee content
+  const values = ["Trust", "Loyalty", "Respect", "Brotherhood", "No Ego", "Chaos", "Family"];
+  const track = document.getElementById("valuesTrack");
+  const build = () => values.map(v => `<span class="values-item ${v==='Family' ? 'hot' : ''}">${v}<span class="dot">&#9670;</span></span>`).join("");
+  track.innerHTML = build() + build();
+</script>
+
+</body>
+</html>
